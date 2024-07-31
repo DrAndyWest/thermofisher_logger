@@ -23,8 +23,6 @@ def logdata(outfile, data):
 
         with open(outfile,'a') as f: # append to the file in byte mode
             f.write(f'{elapsed_time:.2f},{dose_rate}\n')
-            # f.write(data.encode("utf-8"))
-            # f.write(b'--- next output --- \n')  
 
 if __name__ == "__main__":
     logfile = create_log_file()  #"radeye_bytesSim.log"
@@ -48,19 +46,17 @@ if __name__ == "__main__":
         ser.close()
     # Open the serial connection
     ser.open()
-  
     time.sleep(1.5)
+    
     # Send the commands for the device to repeateadly send values every second.
     ser.write(b'00')
     byte = ser.read(1)
-    # logdata(logfile, byte.decode("utf-8"))  
-      
-    # time.sleep(5/10000000) #This line and two above are needed to alert the device that a control command is coming.
     time.sleep(0.5)
-    cmd=b'/X1\r\n' # This is the command to make the device start streaming sensor values
+    
+    # This is the command to make the device start streaming sensor values
+    cmd=b'/X1\r\n'
     ser.write(cmd)
     byte = ser.read(1)
-    # logdata(logfile, byte.decode("utf-8")) 
     time.sleep(.1)
 
 
