@@ -7,12 +7,19 @@
 import serial
 import time
 import datetime
+import argparse
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', dest='port', nargs='?', default="/dev/ttyUSB0", type=str, help="port of serial->usb cable, e.g. --port /dev/ttyUSB0")
+    args = parser.parse_args()
+    return args
+    
 
 def create_log_file():
     current_time = datetime.datetime.now()
     filename = "G10_STS_" + current_time.strftime("%Y%m%d_%H-%M") + ".log"
     return filename
-
 
 def logdata(outfile, data):
     out=data.split(' ')
@@ -25,13 +32,15 @@ def logdata(outfile, data):
             f.write(f'{elapsed_time:.2f},{dose_rate}\n')
 
 if __name__ == "__main__":
+    input_args = parse_args()
+    serial_port = input_args.port
+    
     logfile = create_log_file()  #"radeye_bytesSim.log"
     
     # Establish a serial port connection IAW specification on page 2-1
     controlBytes=['\x02','\x03', "b'\x02'"]
     ser = serial.Serial(
-        port='/dev/ttyUSB0',
-        # port='/dev/ttyACM0',
+        port=serial_port,
         baudrate=9600,
         parity=serial.PARITY_EVEN,
         stopbits=serial.STOPBITS_TWO,
